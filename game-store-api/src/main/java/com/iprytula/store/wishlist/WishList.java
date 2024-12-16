@@ -4,6 +4,7 @@ import com.iprytula.store.common.BaseEntity;
 import com.iprytula.store.game.Game;
 import com.iprytula.store.user.User;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class WishList extends BaseEntity {
 	@OneToOne(optional = false)
 	private User user;
 
-	@ManyToMany(mappedBy = "wishlists")
+	@ManyToMany(mappedBy = "wishlists", fetch = FetchType.EAGER)
 	private List<Game> games;
 
 }
