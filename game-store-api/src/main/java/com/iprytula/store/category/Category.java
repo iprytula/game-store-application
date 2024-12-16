@@ -1,11 +1,11 @@
 package com.iprytula.store.category;
 
 import com.iprytula.store.common.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.iprytula.store.game.Game;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,4 +15,7 @@ import lombok.*;
 public class Category extends BaseEntity {
 	private String name;
 	private String description;
+
+	@OneToMany(mappedBy = "category")
+	private List<Game> games;
 }
