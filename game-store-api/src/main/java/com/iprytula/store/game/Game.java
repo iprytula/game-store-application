@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -19,7 +20,7 @@ public class Game extends BaseEntity {
 	private String description;
 
 	@Enumerated(EnumType.STRING)
-	private SupportedPlatforms supportedPlatforms;
+	private Set<SupportedPlatforms> supportedPlatforms;
 	private String coverPicture;
 
 	@ManyToOne
@@ -27,6 +28,7 @@ public class Game extends BaseEntity {
 	private Category category;
 
 	@OneToMany(mappedBy = "game")
+	@OrderBy(value = "content")
 	private List<Comment> comments;
 
 	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
