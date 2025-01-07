@@ -1,6 +1,7 @@
 package com.iprytula.store.game;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +14,8 @@ public interface GameRepository extends JpaRepository<Game, UUID> {
 	Page<Game> findAllByCategoryId(UUID categoryId, Pageable pageable);
 
 	Page<Game> findAllByCategoryName(String name, Pageable pageable);
+
+	List<Game> findAll(Specification<Game> spec);
 
 	// alternative with JPQL syntax
 	@Query("""
