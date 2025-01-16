@@ -12,14 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@NamedQuery(
-	name = "Category.findByName",
-	query = """
-		SELECT c FROM Category c
-		WHERE c.name LIKE lower(:name)
-		ORDER BY c.name ASC
-	"""
-)
 public class Category extends BaseEntity {
 	private String name;
 	private String description;
