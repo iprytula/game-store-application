@@ -1,71 +1,83 @@
 package com.iprytula.store.game;
 
-import com.iprytula.store.category.Category;
-import com.iprytula.store.common.PageResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
+import com.iprytula.store.category.CategoryRepository;
+import com.iprytula.store.common.PageResponseDTO;
+import com.iprytula.store.platform.AvailablePlatform;
+import com.iprytula.store.platform.Platform;
+import com.iprytula.store.platform.PlatformRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
-@RequiredArgsConstructor
 public class GameService {
+
 	private final GameRepository gameRepository;
+	private final GameMapper gameMapper;
+	private final PlatformRepository platformRepository;
+	private final CategoryRepository categoryRepository;
 
-	public PageResponse<Game> pagedResult(Integer page, Integer size) {
-		Pageable pageable = PageRequest.of(
-			page,
-			size,
-			Sort.by(
-				Sort.Direction.DESC,
-				"title",
-				"createTime"
-			)
-		);
+	@Autowired
+	GameService(GameRepository gameRepository, GameMapper gameMapper, PlatformRepository platformRepository, CategoryRepository categoryRepository) {
+		this.gameRepository = gameRepository;
+		this.gameMapper = gameMapper;
+		this.platformRepository = platformRepository;
+		this.categoryRepository = categoryRepository;
+	}
 
-		Page<Game> pagedResult = gameRepository.findAllByCategoryName("anyCategory", pageable);
+	public GameResponseDTO saveGame(GameRequestDTO gameRequest) {
+		if (gameRepository.existsByTitle(gameRequest.getTitle())) {
+			log.info("Game already exists: {}", gameRequest.getTitle());
+			// TODO: create dedicated exception
+			throw new RuntimeException("Game already exists");
+		}
 
-		return PageResponse.<Game>builder()
-			.content(pagedResult.getContent())
-			.totalPages(pagedResult.getTotalPages())
-			.totalElements(pagedResult.getTotalElements())
-			.isLast(pagedResult.isLast())
-			.isFirst(pagedResult.isFirst())
+		final Set<AvailablePlatform> selectedAvailablePlatforms =
+			gameRequest.getPlatforms().stream().map(AvailablePlatform::valueOf).collect(Collectors.toSet());
+		final Set<Platform> platforms = platformRepository.findAllByAvailablePlatformIn(selectedAvailablePlatforms);
+
+		if (platforms.size() != selectedAvailablePlatforms.size()) {
+			log.warn("Platforms do not match, Received: {} - Stored: {}", selectedAvailablePlatforms, platforms);
+			throw new RuntimeException("Platforms do not match");
+		}
+
+		if (!categoryRepository.existsById(gameRequest.getCategoryId())) {
+			log.warn("Category does not exist: {}", gameRequest.getCategoryId());
+			throw new RuntimeException("Category does not exist");
+		}
+
+		final Game game = gameMapper.toGame(gameRequest);
+		game.setPlatforms(platforms);
+
+		final Game savedGame = gameRepository.save(game);
+
+		return GameResponseDTO.builder()
+			.title(savedGame.getTitle())
+			.id(savedGame.getId())
+			.imageUrl(savedGame.getCoverPicture())
+			.platforms(savedGame.getPlatforms().stream().map(platform -> platform.getAvailablePlatform().toString()).collect(Collectors.toSet()))
 			.build();
 	}
 
-	public void queryByExample() {
-		Game game = new Game();
-		game.setTitle("witcher");
-		Set<SupportedPlatforms> supportedPlatforms = new HashSet<>();
-		supportedPlatforms.add(SupportedPlatforms.PC);
-		game.setSupportedPlatforms(supportedPlatforms);
-
-		ExampleMatcher matcher = ExampleMatcher.matchingAny()
-			.withMatcher("title", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase())
-			.withMatcher("supportedPlatforms", ExampleMatcher.GenericPropertyMatchers.contains().exact());
-
-		Example<Game> example = Example.of(game, matcher);
-
-		Optional<Game> myGame = gameRepository.findOne(example);
+	public GameResponseDTO updateGame(Long gameId, GameRequestDTO gameRequest) {
+		return null;
 	}
 
-	private static Specification<Game> buildSpecification(String title, SupportedPlatforms platform) {
-		Specification<Game> specification = Specification.where(null);
-
-		if (!title.isEmpty()) {
-			specification = specification.and(GameSpecifications.byGameTitle(title));
-		}
-		if (platform != null) {
-			specification = specification.and(GameSpecifications.byGameSupportedPlatform(platform));
-		}
-
-		return specification;
+	public GameResponseDTO uploadGameImage(MultipartFile file, Long gameId) {
+		return null;
 	}
 
-	public void specificationExample() {
-		List<Game> games = gameRepository.findAll(buildSpecification("witcher", SupportedPlatforms.PC));
+	public PageResponseDTO<GameResponseDTO> findAllGames(Integer page, Integer size) {
+		return null;
 	}
+
+	public GameResponseDTO deleteGame(Long gameId) {
+		return null;
+	}
+
 }

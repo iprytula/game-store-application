@@ -1,7 +1,7 @@
 package com.iprytula.store.user;
 
 import com.iprytula.store.common.BaseEntity;
-import com.iprytula.store.gamerequest.GameRequest;
+import com.iprytula.store.game_demand.GameDemand;
 import com.iprytula.store.notification.Notification;
 import com.iprytula.store.wishlist.WishList;
 import jakarta.persistence.Entity;
@@ -34,5 +34,5 @@ public class User extends BaseEntity {
 	private List<Notification> notifications;
 
 	@OneToMany(mappedBy = "user")
-	private List<GameRequest> gameRequests;
+	private List<GameDemand> gameRequests;
 }

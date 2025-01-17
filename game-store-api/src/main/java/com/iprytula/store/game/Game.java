@@ -3,13 +3,16 @@ package com.iprytula.store.game;
 import com.iprytula.store.category.Category;
 import com.iprytula.store.comment.Comment;
 import com.iprytula.store.common.BaseEntity;
+import com.iprytula.store.platform.Platform;
 import com.iprytula.store.wishlist.WishList;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 import java.util.Set;
 
+@SuperBuilder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,8 +22,8 @@ public class Game extends BaseEntity {
 	private String title;
 	private String description;
 
-	@Enumerated(EnumType.STRING)
-	private Set<SupportedPlatforms> supportedPlatforms;
+	@ManyToMany(fetch = FetchType.EAGER)
+	private Set<Platform> platforms;
 	private String coverPicture;
 
 	@ManyToOne

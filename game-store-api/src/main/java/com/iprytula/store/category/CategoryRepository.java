@@ -1,9 +1,8 @@
 package com.iprytula.store.category;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
-public interface CategoryRepository extends JpaRepository<Category, UUID> {
-
+@Repository
+public interface CategoryRepository extends JpaRepository<Category, Long> {
 }

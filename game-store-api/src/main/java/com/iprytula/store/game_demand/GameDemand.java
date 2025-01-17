@@ -1,4 +1,4 @@
-package com.iprytula.store.gamerequest;
+package com.iprytula.store.game_demand;
 
 import com.iprytula.store.common.BaseEntity;
 import com.iprytula.store.user.User;
@@ -16,11 +16,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class GameRequest extends BaseEntity {
+public class GameDemand extends BaseEntity {
 	private String title;
 
 	@Enumerated(EnumType.STRING)
-	private RequestStatus status;
+	private DemandStatus status;
 
 	@ManyToOne(optional = false)
 	private User user;

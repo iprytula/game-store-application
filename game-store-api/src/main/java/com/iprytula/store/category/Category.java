@@ -4,9 +4,11 @@ import com.iprytula.store.common.BaseEntity;
 import com.iprytula.store.game.Game;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+@SuperBuilder
 @Getter
 @Setter
 @AllArgsConstructor
