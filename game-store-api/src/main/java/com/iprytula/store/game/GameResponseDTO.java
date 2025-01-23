@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,6 +14,6 @@ import java.util.Set;
 public class GameResponseDTO {
 	private Long id;
 	private String title;
-	private Set<String> platforms;
+	private List<String> platforms;
 	private String imageUrl;
 }

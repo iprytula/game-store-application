@@ -20,17 +20,19 @@ import java.util.Set;
 @Entity
 public class Game extends BaseEntity {
 	private String title;
+
 	private String description;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	private Set<Platform> platforms;
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
+	private List<Platform> platforms;
+
 	private String coverPicture;
 
 	@ManyToOne
 	@JoinColumn(name = "category_id")
 	private Category category;
 
-	@OneToMany(mappedBy = "game")
+	@OneToMany(mappedBy = "game", orphanRemoval = true)
 	@OrderBy(value = "content")
 	private List<Comment> comments;
 
@@ -54,6 +56,16 @@ public class Game extends BaseEntity {
 	public void removeWishlist(WishList wishlist) {
 		this.wishlists.remove(wishlist);
 		wishlist.getGames().remove(this);
+	}
+
+	public void addPlatform(Platform platform) {
+		this.platforms.add(platform);
+		platform.getGames().add(this);
+	}
+
+	public void removePlatform(Platform platform) {
+		this.platforms.remove(platform);
+		platform.getGames().remove(this);
 	}
 
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -12,5 +13,5 @@ import java.util.Set;
 public class GameRequestDTO {
 	private String title;
 	private Long categoryId;
-	private Set<String> platforms;
+	private List<String> platforms;
 }

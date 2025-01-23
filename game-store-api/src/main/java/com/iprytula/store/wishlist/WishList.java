@@ -29,4 +29,8 @@ public class WishList extends BaseEntity {
 	@ManyToMany(mappedBy = "wishlists", fetch = FetchType.EAGER)
 	private List<Game> games;
 
+	public void removeGame(Game game) {
+		games.remove(game);
+	}
+
 }

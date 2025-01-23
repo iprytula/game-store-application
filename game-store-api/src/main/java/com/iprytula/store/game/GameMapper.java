@@ -11,4 +11,18 @@ public class GameMapper {
 			.category(Category.builder().id(gameRequest.getCategoryId()).build())
 			.build();
 	}
+
+	public GameResponseDTO toGameResponse(Game game) {
+		return GameResponseDTO.builder()
+			.id(game.getId())
+			.title(game.getTitle())
+//			FIXME set the CDN URL
+			.imageUrl("FIXME")
+			.platforms(
+				game.getPlatforms().stream()
+					.map(platform -> platform.getAvailablePlatform().name())
+					.toList()
+			)
+			.build();
+	}
 }
